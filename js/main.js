@@ -1,4 +1,4 @@
-console.clear();
+// console.clear();
 let element = document.getElementById("totalPrecio");
 element.innerHTML="Total en precio";
 
@@ -31,14 +31,75 @@ let cuerpoTabla = tabla.getElementsByTagName("tbody");
 // <td>$ 23.00</td>
 // </tr> `;
 let agregar = document.getElementById("btnAgregar");
+let contador = 0;
+let costoTotal = 0;
+let total = document.getElementById("precioTotal");
+
+function validarNombre(){
+    if (txtNombre.value.length < 3 ){
+        return false;
+    } 
+return true;
+} //validar Nombre
+
+function validarCantidad(){
+    if(txtNumber.value.length==0) {
+        return false;
+    }// if
+     if (isNaN(txtNumber.value)){
+        return false;
+     }//if
+
+     if (parseFloat(txtNumber.value)<=0) {
+        return false;
+     }//if
+     return true;
+}// validarCantidad
 
 agregar.addEventListener("click", (event)=>{
-    let precio = Math.random() * 50;
+    event.preventDefault();
+    if ( (!validarNombre()) || (!validarCantidad()) ){
+        let lista="";
+
+    if(!validarNombre()){
+        txtNombre.style.border="red thin solid";
+        lista+="<li>Se debe escribir un nombre válido</li>";
+    }
+
+    if(!validarCantidad()){
+        txtNumber.style.border="red thin solid";
+        lista+="<li>Se debe escribir una cantidad válida</li>";
+    }
+
+    document.getElementById("alertValidacionesTexto").innerHTML=`
+    Los campos deben ser llenados correctamente.
+    <ul>${lista}</ul>
+    `;
+    document.getElementById("alertValidaciones").style.display="block";
+        setTimeout(function(){
+            document.getElementById("alertValidaciones").classList.add('close');
+            document.getElementById("alertValidaciones").style.display="none";
+        }, 
+        2000
+        );
+        return false;
+    }
+    txtNumber.style.border="";
+    txtNombre.style.border="";
+    document.getElementById("alertValidaciones").style.display="none";
+
+    contador++;
+    document.getElementById("contadorProductos").innerHTML=contador; 
+    let precio = ((Math.round((Math.random() * 50)*100))/100);
+    let cantidad = parseFloat(txtNumber.value);
+    costoTotal += (precio * cantidad);
+    // total.innerHTML = "$ "+costoTotal;
+    total.innerHTML = `$ ${costoTotal.toFixed(2)}`;
     let tmp =`<tr>
-    <th scope="row">1</th>
+    <th scope="row">${contador}</th>
     <td>${txtNombre.value}</td>
     <td>${txtNumber.value}</td>
-    <td>${precio}</td>
+    <td>${"$ "+precio}</td>
     </tr> `;
 
 console.log(agregar);
@@ -46,4 +107,16 @@ cuerpoTabla[0].innerHTML += tmp;
 txtNumber.value="";
 txtNombre.value="";
 txtNombre.focus();
+
 });
+
+txtNombre.addEventListener("blur", (event)=> {
+    event.target.value = event.target.value.trim();
+}
+);
+
+txtNumber.addEventListener("blur", (event)=> {
+    event.target.value = event.target.value.trim();
+    event.target.value = event.target.value.trim();
+}
+);
