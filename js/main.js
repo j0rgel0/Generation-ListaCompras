@@ -141,18 +141,18 @@ txtNumber.addEventListener("blur", (event)=> {
 }
 );
 
-window.addEventListener("load", function(){
-    if(localStorage.getItem("contadorProductos")!=null){
-        contador = parseInt(localStorage.getItem("contadorProductos"));
+window.addEventListener("load", function() {
+    if (localStorage.getItem ("contadorProductos")!=null)   {
+        contador = parseInt(localStorage.getItem ("contadorProductos"));
         document.getElementById("contadorProductos").innerHTML=contador;
-    }
-    if(localStorage.getItem("productosTotal")!=null){
-        contador = parseInt(localStorage.getItem("productosTotal"));
-        document.getElementById("productosTotal").innerHTML=contador;
-    }
-    if(localStorage.getItem("precioTotal")!=null){
-        contador = parseInt(localStorage.getItem("precioTotal"));
-        document.getElementById("precioTotal").innerHTML=contador;
-    }
+    }//if  contadorProductos
+     if (localStorage.getItem ("productosTotal")){
+        totalEnProductos = parseInt(localStorage.getItem ("productosTotal"));
+        document.getElementById("productosTotal").innerHTML = totalEnProductos; 
+     } //if productosTotal
+      if (localStorage.getItem ("precioTotal")){
+        costoTotal = parseFloat(localStorage.getItem ("precioTotal"));
+        total.innerHTML = costoTotal;
+      }//if precioTotal
 }
 );
