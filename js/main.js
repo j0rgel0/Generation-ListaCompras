@@ -1,6 +1,6 @@
 // console.clear();
 let element = document.getElementById("totalPrecio");
-element.innerHTML="Total en precio";
+element.innerHTML = "Total en precio";
 
 let txtNombre = document.getElementById("Name");
 // txtNombre.value="Leche Semidescremada";
@@ -34,125 +34,164 @@ let agregar = document.getElementById("btnAgregar");
 let contador = 0;
 let costoTotal = 0;
 let total = document.getElementById("precioTotal");
-let totalEnProductos=0;
+let totalEnProductos = 0;
 
-function validarNombre(){
-    if (txtNombre.value.length < 3 ){
+// Arreglo global para almacenar la lista de compras.
+let datos = [];
+
+
+function validarNombre() {
+    if (txtNombre.value.length < 3) {
         return false;
-    } 
-return true;
-} //validar Nombre
-
-function validarCantidad(){
-    if(txtNumber.value.length==0) {
-        return false;
-    }// if
-     if (isNaN(txtNumber.value)){
-        return false;
-     }//if
-
-     if (parseFloat(txtNumber.value)<=0) {
-        return false;
-     }//if
-     return true;
-}// validarCantidad
-
-function hide(){
-    var body=document.getElementById("body");
-    opacity =
-Number(window.getComputedStyle(body).getPropertyValue("opacity"))
-
-      if(opacity>0){
-             opacity=opacity-0.1;
-                     body.style.opacity=opacity
-      }
-      else{
-          clearInterval(intervalID); 
-      }
     }
+    return true;
+} // validar Nombre
 
-agregar.addEventListener("click", (event)=>{
+function validarCantidad() {
+    if (txtNumber.value.length == 0) {
+        return false;
+    } // if
+    if (isNaN(txtNumber.value)) {
+        return false;
+    } // if
+
+    if (parseFloat(txtNumber.value) <= 0) {
+        return false;
+    } // if
+    return true;
+} // validarCantidad
+
+function hide() {
+    var body = document.getElementById("body");
+    opacity = Number(window.getComputedStyle(body).getPropertyValue("opacity"))
+
+    if (opacity > 0) {
+        opacity = opacity - 0.1;
+        body.style.opacity = opacity
+    } else {
+        clearInterval(intervalID);
+    }
+}
+
+agregar.addEventListener("click", (event) => {
     event.preventDefault();
-    if ( (!validarNombre()) || (!validarCantidad()) ){
-        let lista="";
+    if ((! validarNombre()) || (! validarCantidad())) {
+        let lista = "";
 
-    if(!validarNombre()){
-        txtNombre.style.border="red thin solid";
-        lista+="<li>Se debe escribir un nombre válido</li>";
-    }
+        if (! validarNombre()) {
+            txtNombre.style.border = "red thin solid";
+            lista += "<li>Se debe escribir un nombre válido</li>";
+        }
 
-    if(!validarCantidad()){
-        txtNumber.style.border="red thin solid";
-        lista+="<li>Se debe escribir una cantidad válida</li>";
-    }
+        if (! validarCantidad()) {
+            txtNumber.style.border = "red thin solid";
+            lista += "<li>Se debe escribir una cantidad válida</li>";
+        }
 
-    document.getElementById("alertValidacionesTexto").innerHTML=`
+        document.getElementById("alertValidacionesTexto").innerHTML = `
     Los campos deben ser llenados correctamente.
     <ul>${lista}</ul>
     `;
-    document.getElementById("alertValidaciones").style.display="block";
-        setTimeout(function(){
+        document.getElementById("alertValidaciones").style.display = "block";
+        setTimeout(function () {
             // document.getElementById("alertValidaciones").classList.add('close');
             // document.getElementById("alertValidaciones").style.display="none";
             document.getElementById("alertValidaciones").setInterval(hide, 2000);
-        }, 
-       3000
-        );
+        }, 3000);
         return false;
     }
-    txtNumber.style.border="";
-    txtNombre.style.border="";
-    document.getElementById("alertValidaciones").style.display="none";
+    txtNumber.style.border = "";
+    txtNombre.style.border = "";
+    document.getElementById("alertValidaciones").style.display = "none";
     contador++;
-    document.getElementById("contadorProductos").innerHTML=contador; 
-    localStorage.setItem("contadorProductos",contador);
-    let precio = ((Math.round((Math.random() * 50)*100))/100);
+    document.getElementById("contadorProductos").innerHTML = contador;
+    localStorage.setItem("contadorProductos", contador);
+    let precio = ((Math.round((Math.random() * 50) * 100)) / 100);
     let cantidad = parseFloat(txtNumber.value);
-    totalEnProductos += (cantidad<1)?Math.ceil(cantidad):parseInt(cantidad);
+    totalEnProductos += (cantidad < 1) ? Math.ceil(cantidad) : parseInt(cantidad);
     document.getElementById("productosTotal").innerHTML = totalEnProductos;
-    localStorage.setItem("productosTotal",totalEnProductos);
+    localStorage.setItem("productosTotal", totalEnProductos);
     costoTotal += (precio * cantidad);
     // total.innerHTML = "$ "+costoTotal;
-    total.innerHTML = `$ ${costoTotal.toFixed(2)}`;
+    total.innerHTML = `$ ${
+        costoTotal.toFixed(2)
+    }`;
     localStorage.setItem("precioTotal", costoTotal.toFixed(2));
-    let tmp =`<tr>
+
+    let elemento = `{
+        "id" : ${contador},
+        "nombre" : "${
+        txtNombre.value
+    }",
+        "cantidad" : ${
+        txtNumber.value
+    },
+        "precio" : ${precio}
+    }`
+
+    datos.push(JSON.parse(elemento));
+    localStorage.setItem("elementosTabla", JSON.stringify(datos));
+    console.log(datos);
+    
+    let tmp = `<tr>
     <th scope="row">${contador}</th>
-    <td>${txtNombre.value}</td>
-    <td>${txtNumber.value}</td>
-    <td>${"$ "+precio}</td>
+    <td>${
+        txtNombre.value
+    }</td>
+    <td>${
+        txtNumber.value
+    }</td>
+    <td>${
+        "$ " + precio
+    }</td>
     </tr> `;
 
-console.log(agregar);
-cuerpoTabla[0].innerHTML += tmp;
-txtNumber.value="";
-txtNombre.value="";
-txtNombre.focus();
+    console.log(agregar);
+    cuerpoTabla[0].innerHTML += tmp;
+    txtNumber.value = "";
+    txtNombre.value = "";
+    txtNombre.focus();
 
 });
 
-txtNombre.addEventListener("blur", (event)=> {
+txtNombre.addEventListener("blur", (event) => {
     event.target.value = event.target.value.trim();
-}
-);
+});
 
-txtNumber.addEventListener("blur", (event)=> {
+txtNumber.addEventListener("blur", (event) => {
     event.target.value = event.target.value.trim();
     event.target.value = event.target.value.trim();
-}
-);
+});
 
-window.addEventListener("load", function() {
-    if (localStorage.getItem ("contadorProductos")!=null)   {
-        contador = parseInt(localStorage.getItem ("contadorProductos"));
-        document.getElementById("contadorProductos").innerHTML=contador;
-    }//if  contadorProductos
-     if (localStorage.getItem ("productosTotal")){
-        totalEnProductos = parseInt(localStorage.getItem ("productosTotal"));
-        document.getElementById("productosTotal").innerHTML = totalEnProductos; 
-     } //if productosTotal
-      if (localStorage.getItem ("precioTotal")){
-        costoTotal = parseFloat(localStorage.getItem ("precioTotal"));
+window.addEventListener("load", function () {
+    if (localStorage.getItem("contadorProductos") != null) {
+        contador = parseInt(localStorage.getItem("contadorProductos"));
+        document.getElementById("contadorProductos").innerHTML = contador;
+    } // if  contadorProductos
+    if (localStorage.getItem("productosTotal")) {
+        totalEnProductos = parseInt(localStorage.getItem("productosTotal"));
+        document.getElementById("productosTotal").innerHTML = totalEnProductos;
+    } // if productosTotal
+    if (localStorage.getItem("precioTotal")) {
+        costoTotal = parseFloat(localStorage.getItem("precioTotal"));
         total.innerHTML = costoTotal;
-      }//if precioTotal
-}
-);
+    } // if precioTotal
+    if (localStorage.getItem("elementosTabla") != null) {
+        datos = JSON.parse(localStorage.getItem("elementosTabla"));
+        datos.forEach(element => {
+            cuerpoTabla[0].innerHTML += `<tr>
+            <th scope="row">${element.id}</th>
+            <td>${
+                element.nombre
+            }</td>
+            <td>${
+                element.cantidad
+            }</td>
+            <td>${
+                "$ " + element.precio
+            }</td>
+            </tr> `;
+        });
+
+    }
+});
